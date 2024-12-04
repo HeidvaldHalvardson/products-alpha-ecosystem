@@ -1,0 +1,8 @@
+@use "reset";
+@use "variables/global";
+
+.app {
+    font: var(--font-m);
+    background: var(--bg-color);
+    min-height: 100vh;
+}

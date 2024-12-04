@@ -1,0 +1,23 @@
+.Item {
+  height: var(--item-height);
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  padding: 15px;
+  box-sizing: border-box;
+
+  display: flex;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

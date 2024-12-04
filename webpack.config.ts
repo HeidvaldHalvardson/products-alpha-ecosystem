@@ -1,8 +1,13 @@
-import webpack, { Configuration } from 'webpack';
 import path from 'path';
+
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
+import {
+    DefinePlugin,
+    HotModuleReplacementPlugin,
+    type Configuration,
+} from 'webpack';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 interface CustomConfiguration extends Configuration {
     devServer: DevServerConfiguration;
@@ -37,7 +42,10 @@ export default (env: ConfigEnv): CustomConfiguration => {
                 filename: 'css/[name].[contenthash:8].css',
                 chunkFilename: 'css/[name].[contenthash:8].css',
             }),
-            new webpack.HotModuleReplacementPlugin(),
+            new HotModuleReplacementPlugin(),
+            new DefinePlugin({
+                __IS_DEV__: JSON.stringify(isDev),
+            }),
         ],
         module: {
             rules: [
@@ -78,6 +86,7 @@ export default (env: ConfigEnv): CustomConfiguration => {
             mainFiles: ['index'],
             alias: { '@': path.resolve(__dirname, 'src') },
         },
+        devtool: isDev ? 'inline-source-map' : undefined,
         devServer: isDev
             ? {
                   port: PORT,

@@ -1,0 +1,18 @@
+.Header {
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+  position: absolute;
+  width: 100%;
+}
+
+.inner {
+  min-height: var(--header-height);
+  max-width: var(--desktop-width);
+  margin: 0 auto;
+  padding: 16px 22px;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
