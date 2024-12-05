@@ -1,14 +1,11 @@
+import type { ReactNode } from 'react';
+
 import styles from './PageWrapper.module.scss';
 
 interface PageWrapperProps {
-    className?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
-export const PageWrapper = (props: PageWrapperProps) => {
-    const { className = '', children } = props;
-
-    return (
-        <div className={`${styles.PageWrapper} ${className}`}>{children}</div>
-    );
+export const PageWrapper = ({ children }: PageWrapperProps) => {
+    return <div className={styles.PageWrapper}>{children}</div>;
 };

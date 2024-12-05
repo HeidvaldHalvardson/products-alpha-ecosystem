@@ -3,15 +3,9 @@ import { AppRoutes, RoutePath } from '@/providers/router/routeConfig';
 
 import styles from './Header.module.scss';
 
-interface HeaderProps {
-    className?: string;
-}
-
-export const Header = (props: HeaderProps) => {
-    const { className = '' } = props;
-
+export const Header = () => {
     return (
-        <div className={`${styles.Header} ${className}`}>
+        <div className={styles.Header}>
             <div className={styles.inner}>
                 <h1>
                     <AppLink
@@ -21,6 +15,9 @@ export const Header = (props: HeaderProps) => {
                         Store
                     </AppLink>
                 </h1>
+                <AppLink to={RoutePath[AppRoutes.PRODUCT_CREATE]}>
+                    CREATE PRODUCT
+                </AppLink>
             </div>
         </div>
     );

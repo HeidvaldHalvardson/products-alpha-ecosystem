@@ -33,6 +33,7 @@ export default (env: ConfigEnv): CustomConfiguration => {
             filename: '[name].[contenthash].js',
             path: path.resolve(__dirname, 'build'),
             clean: true,
+            publicPath: '/',
         },
         plugins: [
             new HtmlWebpackPlugin({
@@ -42,7 +43,6 @@ export default (env: ConfigEnv): CustomConfiguration => {
                 filename: 'css/[name].[contenthash:8].css',
                 chunkFilename: 'css/[name].[contenthash:8].css',
             }),
-            new HotModuleReplacementPlugin(),
             new DefinePlugin({
                 __IS_DEV__: JSON.stringify(isDev),
             }),

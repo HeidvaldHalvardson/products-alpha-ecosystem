@@ -1,53 +1,64 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import type { ProductInterface } from '@/services/types';
+import type {
+    CreateProductInterface,
+    ProductInterface,
+} from '@/services/types';
 
 const baseUrl = 'https://api.escuelajs.co/api/v1/';
 
+export const ITEMS_PER_PAGE = 10;
+
 export const productsApi = createApi({
     reducerPath: 'productsApi',
-    baseQuery: fetchBaseQuery({ baseUrl }),
+    baseQuery: fetchBaseQuery({
+        baseUrl,
+    }),
     tagTypes: ['Products'],
-    // endpoints: builder => ({
-    //     getProducts: builder.query<
-    //         ProductInterface[],
-    //         { offset: number; limit: number }
-    //     >({
-    //         query: ({ offset, limit }) => {}
-    //             `products?offset=${offset}&limit=${limit}`,
-    //     }),
-    //     providesTags: result => ['Products'],
-    // }),
     endpoints: build => ({
         getProducts: build.query<
             ProductInterface[],
             { offset: number; limit: number }
         >({
-            query: ({ offset = 0, limit = 10 }) => ({
+            query: ({ offset = 0, limit = ITEMS_PER_PAGE }) => ({
                 url: '/products',
                 params: {
                     offset,
                     limit,
                 },
             }),
-            providesTags: result => ['Products'],
+            providesTags: ['Products'],
         }),
-        // addUser: build.mutation({
-        //     query: user => ({
-        //         url: 'users',
-        //         method: 'POST',
-        //         body: user,
-        //     }),
-        //     invalidatesTags: ['User'],
-        // }),
-        // updateUser: build.mutation({
-        //     query: user => ({
-        //         url: `users/${user.id}`,
-        //         method: 'PUT',
-        //         body: user,
-        //     }),
-        //     invalidatesTags: ['User'],
-        // }),
+        getProductById: build.query<ProductInterface, number>({
+            query: id => ({
+                url: `/products/${id}`,
+            }),
+            providesTags: result =>
+                result ? [{ type: 'Products', id: result.id }] : [],
+        }),
+        updateProduct: build.mutation<
+            ProductInterface,
+            { id: number; body: ProductInterface }
+        >({
+            query: ({ id, body }) => ({
+                url: `/products/${id}`,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Products', id },
+            ],
+        }),
+        createProduct: build.mutation<ProductInterface, CreateProductInterface>(
+            {
+                query: body => ({
+                    url: '/products',
+                    method: 'POST',
+                    body,
+                }),
+                invalidatesTags: ['Products'],
+            },
+        ),
         deleteProduct: build.mutation({
             query: id => ({
                 url: `products/${id}`,
@@ -60,4 +71,10 @@ export const productsApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetProductsQuery, useDeleteProductMutation } = productsApi;
+export const {
+    useGetProductsQuery,
+    useDeleteProductMutation,
+    useGetProductByIdQuery,
+    useUpdateProductMutation,
+    useCreateProductMutation,
+} = productsApi;

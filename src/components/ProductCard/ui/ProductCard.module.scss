@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & button {
+    font-size: var(--font-size-l);
+  }
+}
+
+.price {
+  font: var(--font-l)
+}
+
+.inner {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.date {
+  margin-bottom: 20px;
+}

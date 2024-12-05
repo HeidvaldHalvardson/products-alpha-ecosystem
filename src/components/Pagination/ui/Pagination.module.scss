@@ -1,0 +1,10 @@
+.Pagination {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  & p {
+    margin: 0;
+    line-height: 100%;
+  }
+}

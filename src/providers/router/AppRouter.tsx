@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { PageLoader } from '@/components/PageLoader';
-import { PageWrapper } from '@/containers/PageWrapper/PageWrapper';
+import { PageWrapper } from '@/containers';
 
 import { routeConfig } from './routeConfig';
 

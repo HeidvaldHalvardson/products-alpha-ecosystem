@@ -22,7 +22,6 @@ export const Item = (props: ItemProps) => {
         isFavorite = false,
         onFavoriteHandler = () => {},
         onDeleteHandler = () => {},
-        ...rest
     } = props;
 
     const [favorite, setFavorite] = useState(isFavorite);
@@ -52,7 +51,7 @@ export const Item = (props: ItemProps) => {
         <li className={`${styles.Item} ${className}`} onClick={onCardClick}>
             <img
                 src={
-                    !data.category.image
+                    data.category.image
                         ? data.category.image
                         : 'https://metallps.ru/assets/cache_image/empty_720x540_e0a.png'
                 }
@@ -60,7 +59,7 @@ export const Item = (props: ItemProps) => {
                 height={100}
                 alt="Изображение товара."
             />
-            <div>
+            <div className={styles.desc}>
                 <div className={styles.header}>
                     <h3>{data.title}</h3>
                     <div>{data.price} ₽</div>
