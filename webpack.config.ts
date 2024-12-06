@@ -2,11 +2,7 @@ import path from 'path';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import {
-    DefinePlugin,
-    HotModuleReplacementPlugin,
-    type Configuration,
-} from 'webpack';
+import { DefinePlugin, type Configuration } from 'webpack';
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 interface CustomConfiguration extends Configuration {
@@ -20,7 +16,7 @@ interface ConfigEnv {
     port: number;
 }
 
-export default (env: ConfigEnv): CustomConfiguration => {
+const config = (env: ConfigEnv): CustomConfiguration => {
     const mode = env.mode || 'development';
     const PORT = env.port || 3000;
 
@@ -97,3 +93,5 @@ export default (env: ConfigEnv): CustomConfiguration => {
             : undefined,
     };
 };
+
+export default config;
