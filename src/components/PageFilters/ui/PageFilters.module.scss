@@ -1,3 +1,14 @@
 .PageFilters {
   margin: 10px 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.search {
+  width: 300px;
+}
+
+.select {
+  width: 300px;
 }

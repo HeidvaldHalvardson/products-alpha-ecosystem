@@ -1,4 +1,4 @@
-import { AppLink } from '@/components/AppLink/AppLink';
+import { AppLink } from '@/components/AppLink';
 import { AppRoutes, RoutePath } from '@/providers/router/routeConfig';
 
 import styles from './Header.module.scss';

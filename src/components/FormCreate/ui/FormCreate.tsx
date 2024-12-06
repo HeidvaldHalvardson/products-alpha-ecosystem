@@ -31,7 +31,7 @@ export const FormCreate = () => {
         trigger,
     } = useForm<FormValues>({
         defaultValues: {
-            images: [],
+            images: [{ url: '' }],
         },
     });
     const { fields, append, remove } = useFieldArray({
@@ -47,8 +47,6 @@ export const FormCreate = () => {
             ...data,
             images: data.images.map(image => image.url),
         };
-
-        console.log(sendData);
 
         try {
             const createdProduct = await createProductFunc(sendData).unwrap();
@@ -162,12 +160,15 @@ export const FormCreate = () => {
                                         },
                                     )}
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => remove(index)}
-                                >
-                                    Remove
-                                </button>
+                                {index > 0 && (
+                                    <button
+                                        className={styles.remove}
+                                        type="button"
+                                        onClick={() => remove(index)}
+                                    >
+                                        Remove
+                                    </button>
+                                )}
                                 {errors.images?.[index]?.url && (
                                     <p className={styles.errorImages}>
                                         {errors.images[index].url?.message}
@@ -176,7 +177,11 @@ export const FormCreate = () => {
                             </div>
                         );
                     })}
-                    <button type="button" onClick={handleAppend}>
+                    <button
+                        className={styles.append}
+                        type="button"
+                        onClick={handleAppend}
+                    >
                         Append
                     </button>
                     {errors.images && <p>{errors.images.message}</p>}

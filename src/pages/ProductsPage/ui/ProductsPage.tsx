@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { List } from '@/components/List/List';
+import { List } from '@/components/List';
 import { Loader } from '@/components/Loader';
 import { PageFilters } from '@/components/PageFilters';
 import { PageTitle } from '@/components/PageTitle';
 import { Pagination } from '@/components/Pagination';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { SortOrder } from '@/pages/ProductsPage';
 import { addFavorite, removeFavorite } from '@/services/favorites';
 import { getFavorites } from '@/services/favorites/selectors/getFavorites';
 import {
@@ -26,7 +28,10 @@ const ProductsPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
+    const [filteredPage, setFilteredPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
     const [hasMore, setHasMore] = useState(true);
+    const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DEFAULT);
 
     const [showFavorites, setShowFavorites] = useState(false);
 
@@ -46,6 +51,7 @@ const ProductsPage = () => {
     } = getProducts({
         offset: (page - 1) * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
+        title: searchQuery,
     });
 
     const addFavoriteHandler = (product: ProductInterface) => {
@@ -65,45 +71,109 @@ const ProductsPage = () => {
     }, [products]);
 
     const nextPage = () => {
-        setPage(prevPage => prevPage + 1);
-        navigate(`/products?page=${page + 1}`);
+        setPage(prevPage => {
+            const nextPage = prevPage + 1;
+            navigate(`/products?page=${nextPage}`);
+            return nextPage;
+        });
     };
 
     const prevPage = () => {
-        setPage(prevPage => Math.max(prevPage - 1, 1));
-        navigate(`/products?page=${page - 1}`);
+        setPage(prevPage => {
+            const prev = Math.max(prevPage - 1, 1);
+            navigate(`/products?page=${prev}`);
+            return prev;
+        });
     };
 
-    const filteredProducts = showFavorites
-        ? products?.filter(product =>
-              favorites.some(fav => fav.id === product.id),
-          )
-        : products;
+    const nextFilteredPage = () => {
+        setFilteredPage(prevPage => prevPage + 1);
+    };
+
+    const prevFilteredPage = () => {
+        setFilteredPage(prevPage => Math.max(prevPage - 1, 1));
+    };
+
+    const filteredProducts = useMemo(() => {
+        if (showFavorites) {
+            let filteredFavorites = favorites;
+
+            if (searchQuery) {
+                setFilteredPage(1);
+                filteredFavorites = filteredFavorites.filter(product =>
+                    product.title
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()),
+                );
+            }
+
+            const startIndex = (filteredPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = filteredPage * ITEMS_PER_PAGE;
+
+            return filteredFavorites.slice(startIndex, endIndex);
+        } else {
+            return products;
+        }
+    }, [favorites, products, showFavorites, filteredPage, searchQuery]);
+
+    const sortedProducts = useMemo(() => {
+        if (!filteredProducts) return [];
+
+        return [...filteredProducts].sort((a, b) => {
+            switch (sortOrder) {
+                case SortOrder.ASCENDING:
+                    return a.price - b.price;
+                case SortOrder.DESCENDING:
+                    return b.price - a.price;
+                default:
+                    return 0;
+            }
+        });
+    }, [filteredProducts, sortOrder]);
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(() => {
+            navigate(`/products?page=${1}`);
+            return query;
+        });
+    };
 
     return (
         <div>
             <PageTitle>products</PageTitle>
             <PageFilters
                 favoritesOnChange={() => setShowFavorites(!showFavorites)}
+                searchOnChange={handleSearch}
+                onSortChange={order => setSortOrder(order)}
             />
-            {isLoading || isFetching ? <Loader /> : null}
-            {!isLoading && error ? (
+            {(isLoading || isFetching) && <Loader />}
+            {!isLoading && error && (
                 <p>Произошла ошибка, пожалуйста обновите страницу</p>
-            ) : null}
+            )}
             {!isLoading &&
             !isFetching &&
             !error &&
-            products &&
-            products.length ? (
+            sortedProducts &&
+            sortedProducts.length ? (
                 <>
-                    <Pagination
-                        prevPage={prevPage}
-                        nextPage={nextPage}
-                        current={page}
-                        hasMore={hasMore}
-                    />
+                    {!showFavorites && (
+                        <Pagination
+                            prevPage={prevPage}
+                            nextPage={nextPage}
+                            current={page}
+                            hasMore={hasMore}
+                        />
+                    )}
+                    {showFavorites && (
+                        <Pagination
+                            prevPage={prevFilteredPage}
+                            nextPage={nextFilteredPage}
+                            current={filteredPage}
+                            hasMore={sortedProducts.length === ITEMS_PER_PAGE}
+                        />
+                    )}
                     <List
-                        list={filteredProducts}
+                        list={sortedProducts}
                         favorites={favorites}
                         onDelete={deleteProduct}
                         addFavorite={addFavoriteHandler}
@@ -111,14 +181,9 @@ const ProductsPage = () => {
                     />
                 </>
             ) : null}
-            {products && products.length === 0 ? (
-                <>
-                    <p>По вашему запросу товаров не найдено</p>
-                    <button onClick={() => navigate(-1)}>
-                        Вернуться на предыдущую страницу
-                    </button>
-                </>
-            ) : null}
+            {sortedProducts && sortedProducts.length === 0 && (
+                <p>По вашему запросу товаров не найдено</p>
+            )}
         </div>
     );
 };

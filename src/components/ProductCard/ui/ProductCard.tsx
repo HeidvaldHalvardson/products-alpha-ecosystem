@@ -1,7 +1,7 @@
 import { EditOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { AppLink } from '@/components/AppLink/AppLink';
+import { AppLink } from '@/components/AppLink';
 import { PageTitle } from '@/components/PageTitle';
 import { AppRoutes, RoutePath } from '@/providers/router/routeConfig';
 import type { ProductInterface } from '@/services/types';

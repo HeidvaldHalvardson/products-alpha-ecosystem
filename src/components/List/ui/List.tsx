@@ -17,9 +17,9 @@ export const List = (props: ListProps) => {
         className = '',
         list = [],
         favorites = [],
-        onDelete = id => {},
-        addFavorite = product => {},
-        removeFavorite = id => {},
+        onDelete = () => {},
+        addFavorite = () => {},
+        removeFavorite = () => {},
     } = props;
 
     const onDeleteHandler = (id: number) => {

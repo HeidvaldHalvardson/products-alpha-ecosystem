@@ -1,5 +1,11 @@
 .form {
   width: 60%;
+
+  & button {
+    padding: 3px 10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+  }
 }
 
 .field {
@@ -23,13 +29,17 @@
   bottom: -23px;
 }
 
+.remove {
+  margin-left: 5px;
+  color: red;
+}
+
+.append {
+  margin: 5px 0;
+  color: green;
+}
+
 .controls {
   display: flex;
   gap: 10px;
-
-  & button {
-    padding: 3px 10px;
-    border: 1px solid #000000;
-    border-radius: 4px;
-  }
 }

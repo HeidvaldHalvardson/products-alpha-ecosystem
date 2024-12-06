@@ -18,13 +18,14 @@ export const productsApi = createApi({
     endpoints: build => ({
         getProducts: build.query<
             ProductInterface[],
-            { offset: number; limit: number }
+            { offset: number; limit: number; title?: string }
         >({
-            query: ({ offset = 0, limit = ITEMS_PER_PAGE }) => ({
+            query: ({ offset = 0, limit = ITEMS_PER_PAGE, title = '' }) => ({
                 url: '/products',
                 params: {
                     offset,
                     limit,
+                    title,
                 },
             }),
             providesTags: ['Products'],
